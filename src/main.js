@@ -11,18 +11,40 @@ const access = promisify(fs.access);
 const copy = promisify(ncp);
 
 async function copyTemplateFiles(options) {
-  if(options.module_name){
-      if (options.module === "sequelize") {
+  if(options.module){
+    if (options.module_name && !options.controller && !options.service && !options.migration) {
+      if (options.module == " sequelize"){
+        copyDirectoryRecursiveSync(options.templateDirectory + '/sequelize/Modules', options.targetDirectory + '/Modules');
         copyDirectoryRecursiveSync(options.templateDirectory +'/sequelize/config', options.targetDirectory + '/config');
         copyDirectoryRecursiveSync(options.templateDirectory + '/sequelize/functions', options.targetDirectory + '/functions');
-        copyDirectoryRecursiveSync(options.templateDirectory+'/Modules', options.targetDirectory + '/Modules');        
       }else{
-        
+
       }
+    }
+    if (options.module_name && options.controller) {
+      copyDirectoryRecursiveSync(options.templateDirectory +'/'+ options.module +'/Modules/File/Controllers', options.targetDirectory + '/Modules/' + options.module_name + '/Controllers');
+      renameFilesRecursive(options.targetDirectory + '/Modules/' + options.module_name + '/Controllers', /File/g, options.controller);
+    } else if (options.module_name && options.service) {
+      copyDirectoryRecursiveSync(options.templateDirectory + '/' + options.module + '/Modules/File/Service', options.targetDirectory + '/Modules/' + options.module_name + '/Service');
+      renameFilesRecursive(options.targetDirectory + '/Modules/' + options.module_name + '/Service', /File/g, options.service);
+    } else if (options.module_name && options.migration) {
+      if (options.module == " sequelize") {
+        copyDirectoryRecursiveSync(options.templateDirectory + '/' + options.module + '/Modules/File/migrations', options.targetDirectory + '/Modules/' + options.module_name + '/migrations');
+        renameFilesRecursive(options.targetDirectory + '/Modules/' + options.module_name + '/migrations', /File/g, options.migration);
+        copyDirectoryRecursiveSync(options.templateDirectory + '/' + options.module + '/Modules/File/models', options.targetDirectory + '/Modules/' + options.module_name + '/models');
+        renameFilesRecursive(options.targetDirectory + '/Modules/' + options.module_name + '/models', /File/g, options.migration);
+      }else{
+        copyDirectoryRecursiveSync(options.templateDirectory + '/' + options.module + '/Modules/File/models', options.targetDirectory + '/Modules/' + options.module_name + '/models');
+        renameFilesRecursive(options.targetDirectory + '/Modules/' + options.module_name + '/models', /File/g, options.migration);
+      }
+    }else{
+      renameFilesRecursive(options.targetDirectory + '/Modules', /File/g, options.module_name);
+      renameFilesRecursive(options.targetDirectory + '/Modules', /file/g, options.module_name.toLowerCase());
+      writeFile(options.targetDirectory + '/Modules' + '/' + options.module_name, options.module_name.toLowerCase())
+    }
+
   }
-  renameFilesRecursive(options.targetDirectory + '/Modules', /File/g, options.module_name);
-  renameFilesRecursive(options.targetDirectory + '/Modules', /file/g, options.module_name.toLowerCase());
-  writeFile(options.templateDirectory + '/Modules' + '/' + options.module_name, options.module_name.toLowerCase())
+  
 }
 
 async function copyDirectoryRecursiveSync(source, target, move) {
@@ -37,17 +59,17 @@ async function copyDirectoryRecursiveSync(source, target, move) {
   fs.readdirSync(source).forEach(function (itemName) {
     var sourcePath = path.join(source, itemName)
     var targetPath = path.join(target, itemName)
-
+    if (fs.lstatSync(sourcePath).isFile()) {
+    }
     if (fs.lstatSync(sourcePath).isDirectory()) {
       if (!fs.existsSync(targetPath)) {
         fs.mkdirSync(targetPath)
-        this.copyDirectoryRecursiveSync(sourcePath, targetPath)
+        copyDirectoryRecursiveSync(sourcePath, targetPath)
       } else {
         console.log('it exist')
       }
     }
     else {
-      console.log(sourcePath + ' move to ' + targetPath)
       if (!fs.existsSync(targetPath)) {
         operation(sourcePath, targetPath)
       }
@@ -64,11 +86,13 @@ async function renameFilesRecursive(dir, from, to) {
     const itsStat = fs.statSync(itsPath);
 
     if (itsPath.search(from) > -1) {
-      fs.renameSync(itsPath, itsPath.replace(from, to))
+      // if (!fs.existsSync(itsPath)) {
+        fs.renameSync(itsPath, itsPath.replace(from, to))
+      // }
     }
 
     if (itsStat.isDirectory()) {
-      this.renameFilesRecursive(itsPath.replace(from, to), from, to)
+      renameFilesRecursive(itsPath.replace(from, to), from, to)
     }
   })
 }
@@ -79,7 +103,7 @@ function writeFile(dir, name) {
   file.name = name + " Module";
   fs.writeFile(fileName, JSON.stringify(file, null, 2), function (err) {
     if (err) return console.log(err);
-    console.log(JSON.stringify(file));
+    console.log(name.toUpperCase()+' Module');
   });
 }
 
@@ -92,11 +116,10 @@ export async function createProject(options) {
   };
 
   
-  let templateDir = path.dirname(
-    new URL(import.meta.url).pathname + '/lib/' + options.module + '/' + options.module
-  );
+  let templateDir = path.resolve(__dirname);
+  templateDir = path.resolve(templateDir, templateDir,'../lib')
   options.templateDirectory = templateDir;
-  console.log(options)
+  // console.log(options)
   try {
     await access(templateDir, fs.constants.R_OK);
   } catch (err) {
