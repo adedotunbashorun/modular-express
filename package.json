@@ -1,0 +1,45 @@
+{
+  "name": "express-modular",
+  "version": "0.0.1",
+  "description": "an express modular app using sequelize and mongodb",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "express",
+    "modular",
+    "sequelize",
+    "mongo",
+    "nodejs"
+  ],
+  "author": "adedotun <adedotunolawale@gmail.com>",
+  "license": "MIT",
+  "dependencies": {
+    "arg": "^4.1.0",
+    "chalk": "^2.4.2",
+    "esm": "^3.2.22",
+    "execa": "^1.0.0",
+    "figlet": "^1.2.1",
+    "inquirer": "^6.3.1",
+    "listr": "^0.14.3",
+    "ncp": "^2.0.0",
+    "pkg-install": "^1.0.0",
+    "shelljs": "^0.8.3"
+  },
+  "engines": {
+    "node": ">=6.0.0"
+  },
+  "bin": {
+    "modular-express": "bin/modular-express"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "devDependencies": {},
+  "files": [
+    "bin/",
+    "src/",
+    "templates/"
+  ]
+}
