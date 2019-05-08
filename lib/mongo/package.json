@@ -1,0 +1,19 @@
+{
+  "name": "mongo",
+  "version": "1.0.0",
+  "description": "modular-express mongo module",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "modular-express",
+    "express",
+    "modular",
+    "mongodb",
+    "mongo",
+    "nodejs"
+  ],
+  "author": "adedotun <adedotunolawale@gmail.com>",
+  "license": "MIT"
+}
