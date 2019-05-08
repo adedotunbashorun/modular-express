@@ -40,7 +40,7 @@ async function copyTemplateFiles(options) {
       if(exist === false){
         renameFilesRecursive(options.targetDirectory + '/Modules', /File/g, options.module_name);
         renameFilesRecursive(options.targetDirectory + '/Modules', /file/g, options.module_name.toLowerCase());
-        writeFile(options.targetDirectory + '/Modules' + '/' + options.module_name, options.module_name.toLowerCase())
+        // writeFile(options.targetDirectory + '/Modules' + '/' + options.module_name, options.module_name.toLowerCase())
       }
     }
 
@@ -57,68 +57,36 @@ async function copyDirectoryRecursiveSync(source, target, move) {
   }
 
   var operation = move ? fs.renameSync : fs.copyFileSync
-  fs.readdirSync(source).forEach(function (itemName) {
-    var sourcePath = path.join(source, itemName)
-    var targetPath = path.join(target, itemName)
-    if (fs.lstatSync(sourcePath).isFile()) {
-      // console.info(sourcePath)
-    }
-    if (fs.lstatSync(sourcePath).isDirectory()) {
-      if (!fs.existsSync(targetPath)) {
-        fs.mkdirSync(targetPath)
-        copyDirectoryRecursiveSync(sourcePath, targetPath)
-      } else {
-        exist = true
-        console.log('it exist')
+  try{
+    fs.readdirSync(source).forEach(function (itemName) {
+      var sourcePath = path.join(source, itemName)
+      var targetPath = path.join(target, itemName)
+      if (fs.lstatSync(sourcePath).isFile()) {
+        // console.info(sourcePath)
       }
-    }
-    else {
-      if (!fs.existsSync(targetPath)) {
-        console.log('1', targetPath)
-        operation(sourcePath, targetPath)
+      if (fs.lstatSync(sourcePath).isDirectory()) {
+        if (!fs.existsSync(targetPath)) {
+          fs.mkdirSync(targetPath)
+          copyDirectoryRecursiveSync(sourcePath, targetPath)
+        } else {
+          exist = true
+          console.log('it exist')
+        }
       }
-    }
-  },function(err){
-    console.log(err)
-  })
+      else {
+        if (!fs.existsSync(targetPath)) {
+          operation(sourcePath, targetPath)
+        }
+      }
+    })
+  }catch(error){
+    console.error(error)
+  }
 
 
 }
 
-async function renameFilesRecursive(dir, from, to) {
-
-  // console.log(dir,from)
-  fs.readdirSync(dir).forEach(it => {
-    const itsPath = path.resolve(dir, it);
-    const itsStat = fs.statSync(itsPath);
-    
-    if (itsPath.search(from) > -1) {
-      if (fs.existsSync(itsPath)) {
-        try {
-          fs.renameSync(itsPath, itsPath.replace(from, to), function (error) {
-            if (error) { deleteFolderRecursive(error.path) }
-          })
-          FileReader(itsPath.replace(from, to), to)
-        }catch(error){
-          deleteFolderRecursive(error.path)
-        }        
-      }else{
-        deleteFolderRecursive(error.path)
-      }
-    }
-
-    if (itsStat.isDirectory()) {
-      if (fs.existsSync(itsPath.replace(from, to))) {
-        renameFilesRecursive(itsPath.replace(from, to), from, to)
-      } else {
-        renameFilesRecursive(itsPath.replace(from, to), '/' + to + '/g', to)
-      }
-      
-    }
-  })
-}
-
-async function FileReader(filePath, name) {
+async function FileReader(filePath,name) {
   fs.readFile(filePath, 'utf8', function (err, data) {
     if (err) {
       return console.log(err);
@@ -129,6 +97,50 @@ async function FileReader(filePath, name) {
       if (err) return console.log(err);
     });
   });
+}
+
+async function renameFilesRecursive(dir, from, to) {
+
+  console.log(dir)
+  try{
+    fs.readdirSync(dir).forEach(it => {
+      const itsPath = path.resolve(dir, it);
+      const itsStat = fs.statSync(itsPath);
+      console.log(itsPath)
+      if (itsPath.search(from) > -1) {
+        if (fs.existsSync(itsPath)) {
+          try {
+            if (!itsPath.replace(from, to)) {
+              fs.renameSync(itsPath, itsPath.replace(from, to))
+              FileReader(tsPath.replace(from, to),to)
+            }
+          }catch(error){
+            deleteFolderRecursive(error.path)
+          }
+          
+        }
+      }
+
+      if (itsStat.isDirectory()) {
+        if (fs.existsSync(itsPath.replace(from, to))) {
+          try {
+            renameFilesRecursive(itsPath.replace(from, to), from, to)
+          } catch (error) {
+            console.error(error.path)
+          }
+        } else {
+          try {
+            renameFilesRecursive(itsPath.replace(from, to), '/' + from + '/g', to)
+          } catch (error) {
+            console.error(error.path)
+          }
+        }
+        
+      }
+    })
+  }catch(err){
+  console.log(err)
+  }
 }
 
 async function deleteFolderRecursive(path) {
