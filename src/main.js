@@ -60,10 +60,7 @@ const createModuleModelMigration = (options) => {
   }
 }
 
-async function copyDirectoryRecursiveSync(source, target,start = false, move) {
-  if(start === true){
-    init()
-  }
+async function copyDirectoryRecursiveSync(source, target,start = false, move) {  
   if (!fs.lstatSync(source).isDirectory()) return
 
   if (!fs.existsSync(target)) {
@@ -82,6 +79,9 @@ async function copyDirectoryRecursiveSync(source, target,start = false, move) {
       if (!fs.existsSync(targetPath)) {
         fs.mkdirSync(targetPath)
         copyDirectoryRecursiveSync(sourcePath, targetPath)
+        if (start === true) {
+          init()
+        }
       } else {
         exist = true
         console.log('%s Module already exist', chalk.blue.bold('EXIST'))
