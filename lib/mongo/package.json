@@ -1,0 +1,37 @@
+{
+  "name": "mongo",
+  "version": "1.0.0",
+  "description": "modular-express mongo module",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "nodemon server.js",
+    "local": "nodemon -r dotenv/config server.js"
+  },
+  "keywords": [
+    "modular-express",
+    "express",
+    "modular",
+    "mongodb",
+    "mongo",
+    "nodejs"
+  ],
+  "author": "adedotun <adedotunolawale@gmail.com>",
+  "license": "MIT",
+  "private": false,
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "body-parser": "^1.19.0",
+    "cors": "^2.8.5",
+    "dotenv": "^8.0.0",
+    "express": "^4.16.4",
+    "mongoose": "^5.5.5",
+    "mongoose-unique-validator": "^2.0.3",
+    "morgan": "^1.9.1",
+    "nodemon": "^1.19.0"
+  },
+  "engines": {
+    "node": ">= 8.11.3",
+    "npm": ">= 6.4.0"
+  }
+}

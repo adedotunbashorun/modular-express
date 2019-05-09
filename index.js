@@ -81,17 +81,32 @@ function writeFile(dir,name){
 // getFilesFromDir("./lib", [".js"]).map(console.log);
 
 
-const dir = path.resolve('lib/sequelize/config');
-const dir1 = path.resolve('lib/sequelize/functions');
-const dir2 = path.resolve('lib/sequelize/Modules');
-const model = path.resolve('config')
-const model1 = path.resolve('functions')
-const model2 = path.resolve('Modules')
-const name = "Cart"
-copyDirectoryRecursiveSync(dir,model);
-copyDirectoryRecursiveSync(dir1, model1);
-copyDirectoryRecursiveSync(dir2, model2);
+// const dir = path.resolve('lib/sequelize/config');
+// const dir1 = path.resolve('lib/sequelize/functions');
+// const dir2 = path.resolve('lib/sequelize/Modules');
+// const model = path.resolve('config')
+// const model1 = path.resolve('functions')
+// const model2 = path.resolve('Modules')
+// const name = "Cart"
+// copyDirectoryRecursiveSync(dir,model);
+// copyDirectoryRecursiveSync(dir1, model1);
+// copyDirectoryRecursiveSync(dir2, model2);
 
-renameFilesRecursive(model2, /File/g, name);
-renameFilesRecursive(model2, /file/g, name.toLowerCase());
-writeFile(model2 + '/' + name, name.toLowerCase())
+// renameFilesRecursive(model2, /File/g, name);
+// renameFilesRecursive(model2, /file/g, name.toLowerCase());
+// writeFile(model2 + '/' + name, name.toLowerCase())
+function jsonReader(filePath) {
+    fs.readFile(filePath, 'utf8', function (err, data) {
+        if (err) {
+            return console.log(err);
+        }
+        var result = data.replace(/File/g, 'name');
+
+        fs.writeFile(filePath, result, 'utf8', function (err) {
+            if (err) return console.log(err);
+        });
+    });
+}
+
+
+jsonReader(path.resolve('lib/sequelize/Modules/File/Controllers/FileController.js'))

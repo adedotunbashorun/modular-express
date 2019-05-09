@@ -1,41 +1,44 @@
 import arg from 'arg';
 import inquirer from 'inquirer';
-import { createProject } from './main';
+import { createProject, createService, createController, createModelMigration } from './main';
+
 
 function parseArgumentsIntoOptions(rawArgs) {
-  const args = arg(
-    {
-      '--module_name': String,
-      '--controller': String,
-      '--sequelize_migration': String,
-      '--mongo_model': String,
-      '--service': String,
-      '--yes': Boolean,
-      '--install': Boolean,
-      '-m': '--module_name',
-      '-c': '--controller',
-      '-sq': '--sequelize_migration',
-      '-mg': '--mongo_model',
-      '-s': '--service',
-      '-y': '--yes',
-      '-i': '--install',
-    },
-    {
-      argv: rawArgs.slice(2),
-    }
-  );
-  return {
-    skipPrompts: args['--yes'] || false,
-    module_name: args['--module_name'],
-    controller: args['--controller'],
-    sequelize_migration: args['--sequelize_migration'],
-    mongo_model: args['--mongo_model'],
-    service: args['--service'],
-    module: args._[0],
-    controller: args['--controller'],
-    runInstall: args['--install'] || false,
-  };
+  try{
+    const args = arg(
+      {
+        '--module_name': String,
+        '--controller': String,
+        '--model_migration': String,
+        '--service': String,
+        '--yes': Boolean,
+        '-n': '--module_name',
+        '-c': '--controller',
+        '-m': '--model_migration',
+        '-s': '--service',
+        '-y': '--yes',
+      },
+      {
+        argv: rawArgs.slice(2),
+      }
+    )
+
+    return {
+      skipPrompts: args['--yes'] || false,
+      module_name: args['--module_name'],
+      controller: args['--controller'],
+      model_migration: args['--model_migration'],
+      service: args['--service'],
+      module: args._[0],
+      controller: args['--controller'],
+    };
+
+  } catch (err) {
+    console.log('error argument unknown please pass the correct argument')
+    process.exit()
+  }
 }
+
 
 async function promptForMissingOptions(options) {
   const defaultTemplate = 'mongo';
@@ -44,7 +47,6 @@ async function promptForMissingOptions(options) {
       ...options,
       module: options.module || defaultTemplate,
       module_name: options.module_name,
-      type: options.module || defaultTemplate
     };
   }
 
@@ -83,9 +85,27 @@ async function promptForMissingOptions(options) {
 }
 
 export async function cli(args) {
-  let options = parseArgumentsIntoOptions(args);
-  options = await promptForMissingOptions(options);
-  await createProject(options);
+  let options = parseArgumentsIntoOptions(args)
+  options = await promptForMissingOptions(options).then((option) => {
+    if (option.module) {
+      if (option.module_name && !option.controller && !option.service && !option.model_migration) {
+        createProject(option);
+      }
+      if (option.module_name && option.controller) {
+        createController(option)
+      }
+      if (option.module_name && option.service) {
+        createService(option)
+      }
+      if (option.module_name && option.model_migration) {
+        createModelMigration(option)
+      }
+    }
+  }).catch( err =>{
+    console.log(err)
+    process.exit()
+  });
+  
 }
 
 // ...
