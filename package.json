@@ -18,9 +18,11 @@
   ],
   "author": "adedotun <adedotunolawale@gmail.com>",
   "license": "MIT",
+  "private": false,
   "dependencies": {
     "arg": "^4.1.0",
     "chalk": "^2.4.2",
+    "esm": "^3.2.22",
     "execa": "^1.0.0",
     "figlet": "^1.2.1",
     "inquirer": "^6.3.1",

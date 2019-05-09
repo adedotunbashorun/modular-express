@@ -5,6 +5,7 @@ import Listr from 'listr';
 import figlet from "figlet"
 import ncp from 'ncp';
 import path from 'path';
+import { projectInstall } from 'pkg-install';
 import { promisify } from 'util';
 
 const access = promisify(fs.access);
@@ -16,6 +17,9 @@ const createModule = (options) => {
   copyDirectoryRecursiveSync(options.templateDirectory + '/' + options.module + '/config', options.targetDirectory + '/config',false);
   copyDirectoryRecursiveSync(options.templateDirectory + '/' + options.module + '/functions', options.targetDirectory + '/functions', false);
   copyFile(options.templateDirectory + '/' + options.module + '/package.json', options.targetDirectory + '/package.json')
+  copyFile(options.templateDirectory + '/' + options.module + '/server.js', options.targetDirectory + '/server.js')
+  copyFile(options.templateDirectory + '/' + options.module + '/.env', options.targetDirectory + '/.env')
+  copyFile(options.templateDirectory + '/' + options.module + '/.gitignore', options.targetDirectory + '/.gitignore')
 
   renameFilesRecursive(options.targetDirectory + '/Modules', /File/g, options.module_name);
   renameFilesRecursive(options.targetDirectory + '/Modules', /file/g, options.module_name.toLowerCase());
@@ -156,7 +160,7 @@ const copyFile = (filePath, destPath) => {
   //gets file name and adds it to dir2
   fs.copyFile(filePath, destPath, (err) => {
     if (err) throw err;
-    console.log('File was copied to destination');
+    // console.log('File was copied to destination');
   });
 };
 
@@ -225,11 +229,7 @@ export async function createProject(options) {
         task: () =>
           projectInstall({
             cwd: options.targetDirectory,
-          }),
-        skip: () =>
-          !options.runInstall
-            ? 'Pass --install to automatically install dependencies'
-            : undefined,
+          })
       },
     ],
     {
