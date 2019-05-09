@@ -12,52 +12,36 @@ const access = promisify(fs.access);
 let exist = false;
 
 const createModule = (options) => {
-  if (options.module) {
-    if (options.module_name && !options.controller && !options.service && !options.migration) {
-      copyDirectoryRecursiveSync(options.templateDirectory + '/' + options.module + '/Modules', options.targetDirectory + '/Modules', true);
-      copyDirectoryRecursiveSync(options.templateDirectory + '/' + options.module + '/config', options.targetDirectory + '/config',false);
-      copyDirectoryRecursiveSync(options.templateDirectory + '/' + options.module + '/functions', options.targetDirectory + '/functions', false);
-    }
-    if (exist === false) {
-      renameFilesRecursive(options.targetDirectory + '/Modules', /File/g, options.module_name);
-      renameFilesRecursive(options.targetDirectory + '/Modules', /file/g, options.module_name.toLowerCase());
-      writeFile(options.targetDirectory + '/Modules' + '/' + options.module_name, options.module_name.toLowerCase())
-    }
-  }
+  copyDirectoryRecursiveSync(options.templateDirectory + '/' + options.module + '/Modules', options.targetDirectory + '/Modules', true);
+  copyDirectoryRecursiveSync(options.templateDirectory + '/' + options.module + '/config', options.targetDirectory + '/config',false);
+  copyDirectoryRecursiveSync(options.templateDirectory + '/' + options.module + '/functions', options.targetDirectory + '/functions', false);
+  copyFile(options.templateDirectory + '/' + options.module + '/package.json', options.targetDirectory + '/package.json')
+
+  renameFilesRecursive(options.targetDirectory + '/Modules', /File/g, options.module_name);
+  renameFilesRecursive(options.targetDirectory + '/Modules', /file/g, options.module_name.toLowerCase());
+  writeFile(options.targetDirectory + '/Modules' + '/' + options.module_name, options.module_name.toLowerCase())
 }
 
 const createModuleController = (options) => {
-  if (options.module) {
-    if (options.module_name && options.controller) {
-      copyDirectoryRecursiveSync(options.templateDirectory + '/' + options.module + '/Modules/File/Controllers', options.targetDirectory + '/Modules/' + options.module_name + '/Controllers');
-      renameFilesRecursive(options.targetDirectory + '/Modules/' + options.module_name + '/Controllers', /File/g, options.controller);
-    }
-  }
+    copyDirectoryRecursiveSync(options.templateDirectory + '/' + options.module + '/Modules/File/Controllers', options.targetDirectory + '/Modules/' + options.module_name + '/Controllers');
+    renameFilesRecursive(options.targetDirectory + '/Modules/' + options.module_name + '/Controllers', /File/g, options.controller);
 }
 
 const createModuleService = (options) => {
-  if (options.module) {
-    if (options.module_name && options.service) {
-      copyDirectoryRecursiveSync(options.templateDirectory + '/' + options.module + '/Modules/File/Service', options.targetDirectory + '/Modules/' + options.module_name + '/Service');
-      renameFilesRecursive(options.targetDirectory + '/Modules/' + options.module_name + '/Service', /File/g, options.service);
-    }
-  }
+  copyDirectoryRecursiveSync(options.templateDirectory + '/' + options.module + '/Modules/File/Service', options.targetDirectory + '/Modules/' + options.module_name + '/Service');
+  renameFilesRecursive(options.targetDirectory + '/Modules/' + options.module_name + '/Service', /File/g, options.service);    
 }
 
 const createModuleModelMigration = (options) => {
-  if (options.module) {
-    if (options.module_name && options.model_migration) {
-      if (options.module == " sequelize") {
-        copyDirectoryRecursiveSync(options.templateDirectory + '/' + options.module + '/Modules/File/migrations', options.targetDirectory + '/Modules/' + options.module_name + '/migrations');
-        renameFilesRecursive(options.targetDirectory + '/Modules/' + options.module_name + '/migrations', /File/g, Date.now() + '-create-'.options.model_migration.toLowerCase(), options.model_migration);
-        copyDirectoryRecursiveSync(options.templateDirectory + '/' + options.module + '/Modules/File/models', options.targetDirectory + '/Modules/' + options.module_name + '/models');
-        renameFilesRecursive(options.targetDirectory + '/Modules/' + options.module_name + '/models', /File/g, options.model_migration);
-      } else {
-        copyDirectoryRecursiveSync(options.templateDirectory + '/' + options.module + '/Modules/File/Models', options.targetDirectory + '/Modules/' + options.module_name + '/Models');
-        renameFilesRecursive(options.targetDirectory + '/Modules/' + options.module_name + '/Models', /File/g, options.model_migration);
-      }
+    if (options.module == " sequelize") {
+      copyDirectoryRecursiveSync(options.templateDirectory + '/' + options.module + '/Modules/File/migrations', options.targetDirectory + '/Modules/' + options.module_name + '/migrations');
+      renameFilesRecursive(options.targetDirectory + '/Modules/' + options.module_name + '/migrations', /file/g, options.model_migration.toLowerCase());
+      copyDirectoryRecursiveSync(options.templateDirectory + '/' + options.module + '/Modules/File/models', options.targetDirectory + '/Modules/' + options.module_name + '/models');
+      renameFilesRecursive(options.targetDirectory + '/Modules/' + options.module_name + '/models', /File/g, options.model_migration);
+    } else {
+      copyDirectoryRecursiveSync(options.templateDirectory + '/' + options.module + '/Modules/File/Models', options.targetDirectory + '/Modules/' + options.module_name + '/Models');
+      renameFilesRecursive(options.targetDirectory + '/Modules/' + options.module_name + '/Models', /File/g, options.model_migration);
     }
-  }
 }
 
 async function copyDirectoryRecursiveSync(source, target,start = false, move) {  
@@ -115,7 +99,7 @@ async function renameFilesRecursive(dir, from, to, alt = '1') {
             fs.renameSync(itsPath, itsPath.replace(from, to), function (error) {
               if (error) { deleteFolderRecursive(error.path) }
             })
-              (alt == '1') ? FileReader(itsPath.replace(from, to), to) : FileReader(itsPath.replace(from, to), alt)
+              FileReader(itsPath.replace(from, to), to)
           } else {
             console.log('%s ' + to + ' exist already', chalk.blue.bold('EXIST'))
             process.exit()
@@ -166,6 +150,16 @@ async function deleteFolderRecursive(path) {
   }
 };
 
+//copy the $file to $dir2
+const copyFile = (filePath, destPath) => {
+
+  //gets file name and adds it to dir2
+  fs.copyFile(filePath, destPath, (err) => {
+    if (err) throw err;
+    console.log('File was copied to destination');
+  });
+};
+
 const init = () => {
   console.log(
     chalk.green(
@@ -192,7 +186,7 @@ async function writeFile(dir, name) {
   }
 }
 
-export async function createProject(options) {
+const getOptions = (options) => {
   options = {
     ...options,
     targetDirectory: options.targetDirectory || process.cwd(),
@@ -206,17 +200,36 @@ export async function createProject(options) {
   options.templateDirectory = templateDir;
   // console.log(options)
   try {
-    await access(templateDir, fs.constants.R_OK);
+     access(templateDir, fs.constants.R_OK);
   } catch (err) {
     console.error('%s Invalid modules name', chalk.red.bold('ERROR'));
     process.exit(1);
   }
+
+  return options;
+
+}
+
+export async function createProject(options) {
+  
+  options = getOptions(options)
 
   const tasks = new Listr(
     [
       {
         title: 'Create project files',
         task: () => createModule(options),
+      },
+      {
+        title: 'Install dependencies',
+        task: () =>
+          projectInstall({
+            cwd: options.targetDirectory,
+          }),
+        skip: () =>
+          !options.runInstall
+            ? 'Pass --install to automatically install dependencies'
+            : undefined,
       },
     ],
     {
@@ -230,24 +243,7 @@ export async function createProject(options) {
 }
 
 export async function createController(options) {
-  options = {
-    ...options,
-    targetDirectory: options.targetDirectory || process.cwd(),
-    email: 'adedotunolawale@gmail.com',
-    name: 'Bashorun Adedotun',
-  };
-
-
-  let templateDir = path.resolve(__dirname);
-  templateDir = path.resolve(templateDir, templateDir, '../lib')
-  options.templateDirectory = templateDir;
-  // console.log(options)
-  try {
-    await access(templateDir, fs.constants.R_OK);
-  } catch (err) {
-    console.error('%s Invalid modules name', chalk.red.bold('ERROR'));
-    process.exit(1);
-  }
+  options = getOptions(options)
 
   const tasks = new Listr(
     [
@@ -267,24 +263,7 @@ export async function createController(options) {
 }
 
 export async function createService(options) {
-  options = {
-    ...options,
-    targetDirectory: options.targetDirectory || process.cwd(),
-    email: 'adedotunolawale@gmail.com',
-    name: 'Bashorun Adedotun',
-  };
-
-
-  let templateDir = path.resolve(__dirname);
-  templateDir = path.resolve(templateDir, templateDir, '../lib')
-  options.templateDirectory = templateDir;
-  // console.log(options)
-  try {
-    await access(templateDir, fs.constants.R_OK);
-  } catch (err) {
-    console.error('%s Invalid modules name', chalk.red.bold('ERROR'));
-    process.exit(1);
-  }
+  options = getOptions(options)
 
   const tasks = new Listr(
     [
@@ -304,24 +283,7 @@ export async function createService(options) {
 }
 
 export async function createModelMigration(options) {
-  options = {
-    ...options,
-    targetDirectory: options.targetDirectory || process.cwd(),
-    email: 'adedotunolawale@gmail.com',
-    name: 'Bashorun Adedotun',
-  };
-
-
-  let templateDir = path.resolve(__dirname);
-  templateDir = path.resolve(templateDir, templateDir, '../lib')
-  options.templateDirectory = templateDir;
-  // console.log(options)
-  try {
-    await access(templateDir, fs.constants.R_OK);
-  } catch (err) {
-    console.error('%s Invalid modules name', chalk.red.bold('ERROR'));
-    process.exit(1);
-  }
+  options = getOptions(options)
 
   const tasks = new Listr(
     [

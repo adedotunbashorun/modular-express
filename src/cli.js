@@ -17,6 +17,7 @@ function parseArgumentsIntoOptions(rawArgs) {
         '-g': '--model_migration',
         '-s': '--service',
         '-y': '--yes',
+        '-i': '--install',
       },
       {
         argv: rawArgs.slice(2),
@@ -31,6 +32,7 @@ function parseArgumentsIntoOptions(rawArgs) {
       service: args['--service'],
       module: args._[0],
       controller: args['--controller'],
+      runInstall: args['--install'] || false,
     };
 
   } catch (err) {
