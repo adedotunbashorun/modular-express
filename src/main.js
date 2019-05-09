@@ -258,7 +258,7 @@ export async function createController(options) {
   );
 
   await tasks.run();
-  console.log('%s Project ready', chalk.green.bold('DONE'));
+  console.log('%s Controller ready', chalk.green.bold('DONE'));
   return true;
 }
 
