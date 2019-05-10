@@ -16,6 +16,7 @@ const createModule = (options) => {
   copyDirectoryRecursiveSync(options.templateDirectory + '/' + options.module + '/Modules', options.targetDirectory + '/Modules', true);
   copyDirectoryRecursiveSync(options.templateDirectory + '/' + options.module + '/config', options.targetDirectory + '/config',false);
   copyDirectoryRecursiveSync(options.templateDirectory + '/' + options.module + '/functions', options.targetDirectory + '/functions', false);
+  copyDirectoryRecursiveSync(options.templateDirectory + '/' + options.module + '/Middleware', options.targetDirectory + '/Middleware', false);
   copyFile(options.templateDirectory + '/' + options.module + '/package.json', options.targetDirectory + '/package.json')
   copyFile(options.templateDirectory + '/' + options.module + '/server.js', options.targetDirectory + '/server.js')
   copyFile(options.templateDirectory + '/' + options.module + '/.env', options.targetDirectory + '/.env')
@@ -34,6 +35,11 @@ const createModuleController = (options) => {
 const createModuleService = (options) => {
   copyDirectoryRecursiveSync(options.templateDirectory + '/' + options.module + '/Modules/File/Service', options.targetDirectory + '/Modules/' + options.module_name + '/Service');
   renameFilesRecursive(options.targetDirectory + '/Modules/' + options.module_name + '/Service', /File/g, options.service);    
+}
+
+const createModuleMiddleware = (options) => {
+  copyDirectoryRecursiveSync(options.templateDirectory + '/' + options.module + '/Modules/File/Middleware', options.targetDirectory + '/Modules/' + options.module_name + '/Middleware');
+  renameFilesRecursive(options.targetDirectory + '/Modules/' + options.module_name + '/Middleware', /file/g, options.middleware);
 }
 
 const createModuleModelMigration = (options) => {
@@ -299,5 +305,25 @@ export async function createModelMigration(options) {
 
   await tasks.run();
   console.log('%s Model ready', chalk.green.bold('DONE'));
+  return true;
+}
+
+export async function createMiddleware(options) {
+  options = getOptions(options)
+
+  const tasks = new Listr(
+    [
+      {
+        title: 'Creating Middleware',
+        task: () => createModuleMiddleware(options),
+      },
+    ],
+    {
+      exitOnError: false,
+    }
+  );
+
+  await tasks.run();
+  console.log('%s Middleware ready', chalk.green.bold('DONE'));
   return true;
 }

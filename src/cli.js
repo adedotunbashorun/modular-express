@@ -1,6 +1,6 @@
 import arg from 'arg';
 import inquirer from 'inquirer';
-import { createProject, createService, createController, createModelMigration } from './main';
+import { createProject, createService, createController, createModelMigration, createMiddleware } from './main';
 
 
 function parseArgumentsIntoOptions(rawArgs) {
@@ -10,11 +10,13 @@ function parseArgumentsIntoOptions(rawArgs) {
         '--module_name': String,
         '--controller': String,
         '--model_migration': String,
+        '--middleware': String,
         '--service': String,
         '--yes': Boolean,
         '-n': '--module_name',
         '-c': '--controller',
         '-m': '--model_migration',
+        '-w': '--middleware',
         '-s': '--service',
         '-y': '--yes',
       },
@@ -30,7 +32,7 @@ function parseArgumentsIntoOptions(rawArgs) {
       model_migration: args['--model_migration'],
       service: args['--service'],
       module: args._[0],
-      controller: args['--controller'],
+      middleware: args['--middleware'],
     };
 
   } catch (err) {
@@ -99,6 +101,10 @@ export async function cli(args) {
       }
       if (option.module_name && option.model_migration) {
         createModelMigration(option)
+      }
+
+      if (option.module_name && option.middleware) {
+        createMiddleware(option)
       }
     }
   }).catch( err =>{
