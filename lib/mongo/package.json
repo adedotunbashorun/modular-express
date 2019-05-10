@@ -8,6 +8,12 @@
     "start": "nodemon server.js",
     "local": "nodemon -r dotenv/config server.js"
   },
+  "_modularAliases": {
+    "~root": ".", 
+    "~deep": "src/some/very/deep/directory/or/file",
+    "@my_module": "lib/some-file.js", 
+    "something": "src/foo"
+  },
   "keywords": [
     "modular-express",
     "express",
@@ -18,6 +24,7 @@
   ],
   "author": "adedotun <adedotunolawale@gmail.com>",
   "license": "MIT",
+  "private": true,
   "dependencies": {
     "bcryptjs": "^2.4.3",
     "body-parser": "^1.19.0",
