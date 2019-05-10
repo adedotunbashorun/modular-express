@@ -1,6 +1,6 @@
 {
-  "name": "@modular-express",
-  "version": "0.1.1",
+  "name": "modular-express",
+  "version": "0.1.2",
   "description": "an express modular app using sequelize and mongodb",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
