@@ -1,5 +1,5 @@
 {
-  "name": "sequelize",
+  "name": "modular-express",
   "version": "1.0.0",
   "description": "modular-express sequelize module",
   "main": "index.js",
@@ -18,7 +18,6 @@
   ],
   "author": "adedotun <adedotunolawale@gmail.com>",
   "license": "MIT",
-  "private": false,
   "dependencies": {
     "bcryptjs": "^2.4.3",
     "body-parser": "^1.19.0",
