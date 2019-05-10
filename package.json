@@ -1,5 +1,5 @@
 {
-  "name": "express-modular",
+  "name": "@modular-express",
   "version": "0.1.1",
   "description": "an express modular app using sequelize and mongodb",
   "scripts": {
