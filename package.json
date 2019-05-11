@@ -34,7 +34,7 @@
     "node": ">=6.0.0"
   },
   "bin": {
-    "@modular-express": "bin/modular-express"
+    "@express-modular": "bin/modular-express"
   },
   "publishConfig": {
     "access": "public"
