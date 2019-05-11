@@ -8,12 +8,6 @@
     "start": "nodemon server.js",
     "local": "nodemon -r dotenv/config server.js"
   },
-  "_modularAliases": {
-    "~root": ".", 
-    "~deep": "src/some/very/deep/directory/or/file",
-    "@my_module": "lib/some-file.js", 
-    "something": "src/foo"
-  },
   "keywords": [
     "modular-express",
     "express",
