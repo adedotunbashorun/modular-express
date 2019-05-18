@@ -16,7 +16,9 @@ after installation create a new folder for your project
 
 ```bash
 @express-modular mongo -n User 
+```
     OR
+```bash
 @express-modular mongo --module_name User
 ```
 
@@ -24,7 +26,9 @@ This will create a modular app using mongoDB with a module named user
 
 ```bash
 @express-modular sequelize -n User 
+```
     OR
+```bash
 @express-modular sequelize --module_name User
 ```
 
