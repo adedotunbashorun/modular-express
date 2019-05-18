@@ -13,12 +13,14 @@ function parseArgumentsIntoOptions(rawArgs) {
         '--middleware': String,
         '--service': String,
         '--yes': Boolean,
+        '--install': Boolean,
         '-n': '--module_name',
         '-c': '--controller',
         '-m': '--model_migration',
         '-w': '--middleware',
         '-s': '--service',
         '-y': '--yes',
+        '-i': '--install',
       },
       {
         argv: rawArgs.slice(2),
@@ -33,6 +35,7 @@ function parseArgumentsIntoOptions(rawArgs) {
       service: args['--service'],
       module: args._[0],
       middleware: args['--middleware'],
+      runInstall: args['--install'] || false,
     };
 
   } catch (err) {

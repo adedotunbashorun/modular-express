@@ -107,11 +107,15 @@ async function renameFilesRecursive(dir, from, to, alt = '1') {
         try {
           if (!fs.existsSync(itsPath.replace(from, to))) {
             fs.renameSync(itsPath, itsPath.replace(from, to), function (error) {
-              if (error) { deleteFolderRecursive(error.path) }
+              if (error) { console.log(error), deleteFolderRecursive(error.path) }
             })
               FileReader(itsPath.replace(from, to), to)
-          } else {
+          } else {            
+            deleteFolderRecursive(itsPath)
             console.log('%s ' + to + ' exist already', chalk.blue.bold('EXIST'))
+            if (fs.lstatSync(itsPath).isFile()) {
+              fs.unlinkSync(itsPath);
+            }
             process.exit()
           }
         } catch (error) {
@@ -147,27 +151,34 @@ async function FileReader(filePath, name) {
 }
 
 async function deleteFolderRecursive(path) {
-  if (fs.existsSync(path)) {
-    fs.readdirSync(path).forEach(function (file, index) {
-      var curPath = path + "/" + file;
-      if (fs.lstatSync(curPath).isDirectory()) { // recurse
-        deleteFolderRecursive(curPath);
-      } else { // delete file
-        fs.unlinkSync(curPath);
-      }
-    });
-    fs.rmdirSync(path);
+  try{
+    if (fs.existsSync(path)) {
+        fs.readdirSync(path).forEach(function (file, index) {
+          var curPath = path + "/" + file;
+          if (fs.lstatSync(curPath).isDirectory()) { // recurse
+            deleteFolderRecursive(curPath);
+          } else { // delete file
+            fs.unlinkSync(curPath);
+          }
+        });      
+        fs.rmdirSync(path);          
+    }
+  }catch(err){
+
   }
+  
 };
 
 //copy the $file to $dir2
 const copyFile = (filePath, destPath) => {
 
   //gets file name and adds it to dir2
-  fs.copyFile(filePath, destPath, (err) => {
-    if (err) throw err;
-    // console.log('File was copied to destination');
-  });
+  if (!fs.existsSync(destPath)){
+    fs.copyFile(filePath, destPath, (err) => {
+      if (err) throw err;
+      // console.log('File was copied to destination');
+    });
+  }
 };
 
 const init = () => {
@@ -235,7 +246,11 @@ export async function createProject(options) {
         task: () =>
           projectInstall({
             cwd: options.targetDirectory,
-          })
+          }),
+        skip: () =>
+          !options.runInstall
+            ? 'Pass --install to automatically install dependencies'
+            : undefined,
       },
     ],
     {
