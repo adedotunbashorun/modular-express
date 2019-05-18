@@ -108,5 +108,39 @@ function jsonReader(filePath) {
     });
 }
 
+function getFilesFromDir(dir, fileTypes) {
+    var filesToReturn = [];
+    function walkDir(currentPath) {
+        var files = fs.readdirSync(currentPath);
+        for (var i in files) {
+            var curFile = path.join(currentPath, files[i]);
+            if (fs.statSync(curFile).isFile() && fileTypes.indexOf(path.extname(curFile)) != -1) {
+                filesToReturn.push(curFile.replace(dir, ''));
+            } else if (fs.statSync(curFile).isDirectory()) {
+                walkDir(curFile);
+            }
+        }
+    };
+    walkDir(dir);
+    return filesToReturn;
+}
 
-jsonReader(path.resolve('lib/sequelize/Modules/File/Controllers/FileController.js'))
+//print the txt files in the current directory
+getFilesFromDir("./lib/mongo", [".js"]).map(console.log);
+
+function check(){
+    fs.stat(dirname, function (err, stats) {
+        if (err) {
+            return console.error(err);
+        }
+        console.log(stats);
+        console.log("Got file info successfully!");
+
+        // Check file type
+        console.log("isFile ? " + stats.isFile());
+        console.log("isDirectory ? " + stats.isDirectory());
+    });
+}
+
+
+// jsonReader(path.resolve('lib/sequelize/Modules/File/Controllers/FileController.js'))
