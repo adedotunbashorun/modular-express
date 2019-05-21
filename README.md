@@ -10,7 +10,7 @@ Before installing, [download and install Node.js](https://nodejs.org/en/download
 Node.js 6 or higher is required.
 
 ```bash
-$ npm i g express-modular
+$ npm i -g express-modular
 ```
 after installation create a new folder for your project
 
