@@ -16,9 +16,11 @@ const createModule = (options) => {
   copyDirectoryRecursiveSync(options.templateDirectory + '/' + options.module + '/Modules', options.targetDirectory + '/Modules', true);
   copyDirectoryRecursiveSync(options.templateDirectory + '/' + options.module + '/config', options.targetDirectory + '/config',false);
   copyDirectoryRecursiveSync(options.templateDirectory + '/' + options.module + '/functions', options.targetDirectory + '/functions', false);
+  copyDirectoryRecursiveSync(options.templateDirectory + '/' + options.module + '/src', options.targetDirectory + '/src', false);
   copyDirectoryRecursiveSync(options.templateDirectory + '/' + options.module + '/Middleware', options.targetDirectory + '/Middleware', false);
   copyFile(options.templateDirectory + '/' + options.module + '/package.json', options.targetDirectory + '/package.json')
   copyFile(options.templateDirectory + '/' + options.module + '/server.js', options.targetDirectory + '/server.js')
+  copyFile(options.templateDirectory + '/' + options.module + '/webpack.config.js', options.targetDirectory + '/webpack.config.js')
   copyFile(options.templateDirectory + '/' + options.module + '/.env', options.targetDirectory + '/.env')
   copyFile(options.templateDirectory + '/' + options.module + '/.gitignore', options.targetDirectory + '/.gitignore')
 
