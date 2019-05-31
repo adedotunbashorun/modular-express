@@ -2,12 +2,13 @@
   "name": "sequelize",
   "version": "1.0.0",
   "description": "modular-express sequelize module",
-  "main": "index.js",
+  "main": "src/index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "nodemon server.js",
+    "start": "nodemon build/index.js",
     "db": "node ./config",
-    "local": "nodemon -r dotenv/config server.js"
+    "local": "nodemon -r dotenv/config build/index.js",
+    "webpack": "webpack --config webpack.config.js"
   },
   "keywords": [
     "modular-express",
