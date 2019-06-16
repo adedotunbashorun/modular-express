@@ -1,7 +1,7 @@
 {
-  "name": "sequelize",
+  "name": "",
   "version": "1.0.0",
-  "description": "modular-express sequelize module",
+  "description": "",
   "main": "src/index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
@@ -17,7 +17,7 @@
     "sequelize",
     "nodejs"
   ],
-  "author": "adedotun <adedotunolawale@gmail.com>",
+  "author": "",
   "license": "MIT",
   "private": true,
   "dependencies": {
