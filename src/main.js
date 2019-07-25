@@ -20,7 +20,7 @@ const createModule = (options) => {
   copyDirectoryRecursiveSync(options.templateDirectory + '/' + options.module + '/Middleware', options.targetDirectory + '/Middleware', false);
   copyFile(options.templateDirectory + '/' + options.module + '/package.json', options.targetDirectory + '/package.json')
   copyFile(options.templateDirectory + '/' + options.module + '/server.js', options.targetDirectory + '/server.js')
-  copyFile(options.templateDirectory + '/' + options.module + '/webpack.config.js', options.targetDirectory + '/webpack.config.js')
+  // copyFile(options.templateDirectory + '/' + options.module + '/webpack.config.js', options.targetDirectory + '/webpack.config.js')
   copyFile(options.templateDirectory + '/' + options.module + '/.env', options.targetDirectory + '/.env')
   copyFile(options.templateDirectory + '/' + options.module + '/.gitignore', options.targetDirectory + '/.gitignore')
 
@@ -177,8 +177,8 @@ const copyFile = (filePath, destPath) => {
   //gets file name and adds it to dir2
   if (!fs.existsSync(destPath)){
     fs.copyFile(filePath, destPath, (err) => {
-      if (err) throw err;
-      // console.log('File was copied to destination');
+      // if (err) throw err;
+      console.log('File was copied to destination');
     });
   }
 };
